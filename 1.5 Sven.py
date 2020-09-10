@@ -22,19 +22,17 @@ A = np.array([[ 6,-1,-1],
 #define right-hand side vector
 f = np.array([3,40,50])
 
-def gaussSeidel(A,f,TOL=10**(-6),kmax=100):
+def gaussSeidelForward(A,f,method,TOL=1E-6,kmax=100):
     #calculate initial r and rrs
     u0 = np.zeros(3)
     r0_norm = np.linalg.norm(f - np.dot(A,u0))
     rrs = np.divide(r0_norm, r0_norm)
-    
     #initial k
     k = 0
-    
     #lists for plotting residual norm and iterations
     k_list = []
     rrs_list = []
-    
+
     #Gauss Seidel iterations:
     while rrs > TOL and k < kmax:
         #append k to k list and rrs to rrs list
@@ -43,18 +41,18 @@ def gaussSeidel(A,f,TOL=10**(-6),kmax=100):
         
         #if initial iterations set u values equal to 0
         if k == 0:
-            u = np.zeros(3)
+            u = np.copy(u0)
         
-        #new temporary vector
-        tempu = np.zeros(3)
+        #If method input is forward do forward Gauss-Seidel method
+        if method == 'forward':
+            u[0] = (f[0]-A[0,1]*u[1]-A[0,2]*u[2])/A[0,0]
+            u[1] = (f[1]-A[1,0]*u[0]-A[1,2]*u[2])/A[1,1]
+            u[2] = (f[2]-A[2,0]*u[0]-A[2,1]*u[1])/A[2,2]
         
-        #Change each component according to Gauss Seidel method
-        tempu[0] = (f[0]-A[0,1]*u[1]-A[0,2]*u[2])/A[0,0]
-        tempu[1] = (f[1]-A[1,0]*u[0]-A[1,2]*u[2])/A[1,1]
-        tempu[2] = (f[2]-A[2,0]*u[0]-A[2,1]*u[1])/A[2,2]
-        
-        #copy all values into vector u
-        u = np.copy(tempu)
+        if method == 'backward':
+            u[2] = (f[2]-A[2,0]*u[0]-A[2,1]*u[1])/A[2,2]
+            u[1] = (f[1]-A[1,0]*u[0]-A[1,2]*u[2])/A[1,1]
+            u[0] = (f[0]-A[0,1]*u[1]-A[0,2]*u[2])/A[0,0]
         
         #calculate rrs
         r_k = f - np.dot(A,u)
@@ -66,15 +64,22 @@ def gaussSeidel(A,f,TOL=10**(-6),kmax=100):
         #endloop
     
     if k < kmax-1:
-        print("A convergence has been reached!\n Vector u:\n{}\n".format(u))
-        print("Checking if Au = f...\nA: \n{}\n u: \n {}\n (Rounded:)Au =\n{}".format(A,u,np.around(np.dot(A,u),2)))
+        print(30*"#")
+        print("{} Gauss-Seidel method".format(method))
+        print(30*"#")
+        print("A convergence has been reached!\n\nFound vector u:\n{}\n".format(u))
+        print("Checking if Au = f...\nA: \n{}\nu: \n {}\nAu =\n{}\n(These values are rounded to an integer)\n\n".format(A,u,np.around(np.dot(A,u),2)))
+        plt.plot(k_list,rrs_list, label=method)
+        plt.title("RRS vs k")
+        plt.yscale("log")
+        plt.xlabel("k")
+        plt.ylabel('rrs')
+        plt.legend(loc=1)
+        plt.xlim(0,6.5)
         return u, k_list, rrs_list
     else:
         print("No convergence reached before selected maximum amount of iterations")
 
-u, k_list, rrs_list = gaussSeidel(A,f)
+uf, k_listf, rrs_listf = gaussSeidelForward(A,f,'forward')
+ub, k_listb, rrs_listb = gaussSeidelForward(A,f,'backward')
 
-plt.plot(k_list,rrs_list)
-plt.yscale("log")
-plt.xlabel("k")
-plt.ylabel('rrs')
