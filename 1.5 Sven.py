@@ -22,7 +22,7 @@ A = np.array([[ 6,-1,-1],
 #define right-hand side vector
 f = np.array([3,40,50])
 
-def gaussSeidelForward(A,f,method,TOL=1E-6,kmax=100):
+def gaussSeidel(A,f,method,TOL=1E-6,kmax=100):
     #calculate initial r and rrs
     u0 = np.zeros(3)
     r0_norm = np.linalg.norm(f - np.dot(A,u0))
@@ -80,6 +80,6 @@ def gaussSeidelForward(A,f,method,TOL=1E-6,kmax=100):
     else:
         print("No convergence reached before selected maximum amount of iterations")
 
-uf, k_listf, rrs_listf = gaussSeidelForward(A,f,'forward')
-ub, k_listb, rrs_listb = gaussSeidelForward(A,f,'backward')
+uf, k_listf, rrs_listf = gaussSeidel(A,f,'forward')
+ub, k_listb, rrs_listb = gaussSeidel(A,f,'backward')
 
