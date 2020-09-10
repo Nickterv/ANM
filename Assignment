@@ -1,0 +1,13 @@
+import numpy as np
+import scipy.linalg as la
+import matplotlib.pyplot as plt
+
+# Question 1.1
+A1 = np.array([[7,2,1],[1,7,1],[3,2,7]])
+SOLV = la.lu(A1)
+L = SOLV[1]
+U = SOLV[2] 
+plt.spy(L)
+plt.spy(U)
+
+A2 = np.dot(L,U)
