@@ -1,0 +1,27 @@
+def linear_system(A,b):
+    x = linalg.solve(A,b)
+    return x
+    
+#coefficient matrix    
+A = np.array([[-6,0,1,0,0],[3,-3,0,0,0],[0,1,-9,0,0],[0,1,8,-11,2],[3,5,0,0,-4]])
+print('Coefficient matrix:\n',A)
+print()
+
+#right-hand side vector
+b = ([-50,0,-160,0,0])
+print('Right-hand side matrix:\n',b)
+print()
+
+#Computing solution vector c
+#And checking if A*c = b
+c = scipy.linalg.solve(A,b)
+print('Solution vector: \n',c)
+print()
+
+#residual vector
+r = b - np.dot(A,c)
+print('The residual vector r:', '\n', r, '\n\n', 'Hence, r is approaching 0')
+print()
+res = b - np.dot(A,c).astype(int)
+print('The residual vector if it is an integer r:', res)
+print()
